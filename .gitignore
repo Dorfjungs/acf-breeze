@@ -1,0 +1,6 @@
+.DS_Store
+.idea
+.phpintel
+.php_cs.cache
+cghooks.lock
+/vendor/

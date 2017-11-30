@@ -1,0 +1,45 @@
+<section class="acfbreeze--column-layout--container {{layout.classes('mode')}}">
+    <div class="acfbreeze--column-layout--wrapper {{
+        layout.classes(
+            'reverse',
+            ['alignment_vertical_', layout.params.breakpoints, true],
+            ['alignment_horizontal_', layout.params.breakpoints, true]
+        )
+    }}">
+        {% for col in 1..layout.data.columns %}
+            {% set breakpointSizes = [] %}
+
+            {# Define column sizes for specific breakpoints #}
+            {% for breakpoint in layout.params.breakpoints %}
+                {% set sizes = layout.data['column_sizes_' ~ breakpoint ~ '_' ~ layout.data.columns] %}
+                {% set breakpointSizes = breakpointSizes|merge({(breakpoint): sizes|split('-')}) %}
+            {% endfor %}
+
+            {# Traverse through all columns and render the corresponding modules  #}
+            {% if col not in layout.params.skipColumns %}
+                {% set sizeClasses = [] %}
+
+                {# Build classes for column sizes #}
+                {% for breakpoint in layout.params.breakpoints %}
+                    {% set size = breakpointSizes[breakpoint][col - 1] %}
+
+                    {% if size is not empty %}
+                        {% set sizeClasses = sizeClasses|merge(['col-' ~ breakpoint ~ '-' ~ size]) %}
+                    {% endif %}
+                {% endfor %}
+
+                <div class="acfbreeze--column-layout--column column-{{col}}{{
+                    (sizeClasses is empty) ? '' : (' ' ~ sizeClasses|join(' '))
+                }}">
+                    {% set modules = layout.modules('modules_' ~ col) %}
+                    {% for module in modules %}
+                        {% include module.path() with {
+                            module: module,
+                            package: package
+                        } %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</section>

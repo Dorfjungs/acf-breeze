@@ -1,0 +1,10 @@
+{% for post in posts %}
+    {% for package in packages %}
+        {% for name, group in package.groups %}
+            {% include group.path() with {
+                group: group,
+                package: package
+            } %}
+        {% endfor %}
+    {% endfor %}
+{% endfor %}

@@ -1,0 +1,35 @@
+{
+    "name": "dorfjungs/acf-breeze",
+    "description": "Object orientated configuration for ACF with an automatic Timber integration",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Davide Perozzi",
+            "email": "davide@dorfjungs.com"
+        }
+    ],
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.4",
+        "brainmaestro/composer-git-hooks": "^2.2"
+    },
+    "require": {
+        "stoutlogic/acf-builder": "^1.5",
+        "timber/timber": "^1.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "AcfBreeze\\": "src"
+        }
+    },
+    "extra": {
+        "hooks": {
+            "pre-commit": "php ./vendor/bin/php-cs-fixer fix --verbose",
+            "post-commit": "php ./vendor/bin/phpunit"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": "php ./vendor/bin/cghooks add --ignore-lock",
+        "post-update-cmd": "php ./vendor/bin/cghooks update"
+    }
+}

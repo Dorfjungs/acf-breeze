@@ -1,0 +1,8 @@
+<div class="acfbreeze--content-group">
+    {% for layout in group.layouts() %}
+        {% include layout.path() with {
+            layout: layout,
+            package: package
+        } %}
+    {% endfor %}
+</div>
