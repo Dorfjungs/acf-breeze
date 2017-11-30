@@ -36,11 +36,19 @@ class AcfBreeze
             );
         }
 
+        static::registerDefaultPackage();
+
         foreach ($names as $name) {
+            if (array_key_exists($name, $this->packages)) {
+                throw new Exceptions\PackageAlreadyEnabledException(
+                    sprintf('Package "%s" already enabled', $name)
+                );
+            }
+
             if (array_key_exists($name, static::$configRegistry)) {
-                $this->packages[] = static::parsePackage($name, static::$configRegistry[$name]);
+                $this->packages[$name] = static::parsePackage($name, static::$configRegistry[$name]);
             } else {
-                throw new Exceptions\PackageNotFounException(
+                throw new Exceptions\PackageNotFoundException(
                     sprintf('The pacakge "%s" was not registered', $name)
                 );
             }
@@ -101,14 +109,21 @@ class AcfBreeze
             );
         }
 
+        static::registerDefaultPackage();
+
+        static::$configRegistry[$name] = static::parseConfig($name, $config);
+    }
+
+    /**
+     * @return void
+     */
+    private static function registerDefaultPackage() {
         if ( ! array_key_exists(self::DEFAULT_PACKAGE, static::$configRegistry)) {
             static::$configRegistry[self::DEFAULT_PACKAGE] = static::parseConfig(
                 self::DEFAULT_PACKAGE,
                 static::getDefaultConfig()
             );
         }
-
-        static::$configRegistry[$name] = static::parseConfig($name, $config);
     }
 
     /**

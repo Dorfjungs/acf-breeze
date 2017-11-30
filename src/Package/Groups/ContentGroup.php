@@ -15,12 +15,20 @@ class ContentGroup extends Group
     /**
      * {@inheritDoc}
      */
+    protected $params = [
+        'locations' => [
+            ['page_template', '==', 'default', 'or'],
+            ['post_type', '==', 'post']
+        ]
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
     public function builder(FieldsBuilder &$builder)
     {
         parent::builder($builder);
 
         $builder->setGroupConfig('hide_on_screen', ['the_content']);
-        $builder->setLocation('page_template', '==', 'default')
-              ->or('post_type', '==', 'post');
     }
 }

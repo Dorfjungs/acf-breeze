@@ -22,6 +22,30 @@ abstract class Group extends Field
             $this->name . '_flex_content',
             [ 'label' => 'Layout' ]
         );
+
+        // Applay locations to group
+        if ($this->hasParam('locations')) {
+            $locations = $this->getParam('locations');
+
+            if ( ! empty($locations) && is_array($locations)) {
+                $fnc = 'setLocation';
+                $lastBuilder = $builder;
+
+                foreach ($locations as $location) {
+                    $type = $location[0];
+                    $operator = $location[1];
+                    $value = $location[2];
+
+                    if ($type && $operator && $value) {
+                        $lastBuilder = $lastBuilder->{$fnc}($type, $operator, $value);
+
+                        $fnc = array_key_exists(3, $location)
+                                ? $location[3]
+                                : 'or';
+                    }
+                }
+            }
+        }
     }
 
     /**
