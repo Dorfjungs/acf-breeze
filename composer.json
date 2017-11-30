@@ -1,6 +1,6 @@
 {
     "name": "dorfjungs/acf-breeze",
-    "description": "Object orientated configuration for ACF with an automatic Timber integration",
+    "description": "Object oriented configuration for ACF with an automatic Timber integration",
     "type": "library",
     "license": "MIT",
     "authors": [
