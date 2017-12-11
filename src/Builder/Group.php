@@ -18,12 +18,6 @@ abstract class Group extends Field
      */
     protected function builder(FieldsBuilder &$builder)
     {
-        $this->flexContent = $builder->addFlexibleContent(
-            $this->name . '_flex_content',
-            [ 'label' => 'Layout' ]
-        );
-
-        // Applay locations to group
         if ($this->hasParam('locations')) {
             $locations = $this->getParam('locations');
 
@@ -54,6 +48,13 @@ abstract class Group extends Field
      */
     public function addLayout(Layout $layout)
     {
+        if (is_null($this->flexContent) && $this->builder) {
+            $this->flexContent = $this->builder->addFlexibleContent(
+                $this->name . '_flex_content',
+                [ 'label' => 'Layout' ]
+            );
+        }
+
         $this->flexContent->addLayout($layout->getBuilder());
     }
 }

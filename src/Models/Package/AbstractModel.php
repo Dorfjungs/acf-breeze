@@ -91,12 +91,13 @@ abstract class AbstractModel
     }
 
     /**
+     * @param number $id
      * @return array
      */
-    protected function data()
+    protected function data($id = -1)
     {
         return ! empty($this->data)
             ? $this->data
-            : $this->adapter->getField($this->getEntryName());
+            : $this->adapter->getField($this->getEntryName(), $id);
     }
 }

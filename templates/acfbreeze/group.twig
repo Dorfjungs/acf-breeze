@@ -1,12 +1,13 @@
-{% for post in posts %}
+{% if id is defined %}
     {% for package in packages %}
-        {% for name, group in package.groups %}
-            {% if (group.render) %}
+        {% for group in package.groups %}
+            {% if group.name == name and group.render %}
                 {% include group.path() with {
+                    postId: id,
                     group: group,
                     package: package
                 } %}
             {% endif %}
         {% endfor %}
     {% endfor %}
-{% endfor %}
+{% endif %}

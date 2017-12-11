@@ -6,11 +6,12 @@ class AcfAdapter
 {
     /**
      * @param array $name
+     * @param integer $id
      * @return array
      */
-    public function getField($name)
+    public function getField($name, $id = -1)
     {
-        return get_field($name);
+        return get_field($name, $id > -1 ? $id : false);
     }
 
     /**

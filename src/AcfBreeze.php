@@ -246,6 +246,10 @@ class AcfBreeze
                     $model->layoutSelector = $option['layouts'];
                 }
 
+                if (array_key_exists('render', $option)) {
+                    $model->render = $option['render'];
+                }
+
                 if (array_key_exists('entry', $option)) {
                     $model->entry = $option['entry'];
                 }
@@ -294,7 +298,7 @@ class AcfBreeze
                     $model->class = $class;
                 } else {
                     throw new Exceptions\InvalidOptionException(
-                        sprintf('Invalid option for "%s" provided', $model->name)
+                        sprintf('Class for "%s" not found', $model->name)
                     );
                 }
             }
