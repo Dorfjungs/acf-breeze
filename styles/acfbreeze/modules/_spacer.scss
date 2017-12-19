@@ -1,0 +1,33 @@
+$spacer: (
+    "small": (
+        0px: 25px,
+        480px: 30px,
+        768px: 40px,
+        1024px: 50px
+    ),
+    "medium": (
+        0px: 50px,
+        480px: 60px,
+        768px: 70px,
+        1024px: 75px
+    ),
+    "large": (
+        0px: 75px,
+        480px: 80px,
+        768px: 90px,
+        1024px: 100px
+    )
+) !default;
+
+.acfbreeze--spacer-module {
+    @each $spacerName, $spacerItem in $spacer {
+        @each $spacerBreak, $spacerHeight in $spacerItem {
+            @media only screen and (min-width: $spacerBreak) {
+                &.#{$spacerName} {
+                    height: #{$spacerHeight};
+                }
+            }
+
+        }
+    }
+}
