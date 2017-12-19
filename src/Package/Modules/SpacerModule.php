@@ -27,7 +27,6 @@ class SpacerModule extends Field
         ];
 
         $builder->addSelect('type', ['wrapper' => ['width' => 50]])
-                ->addChoices($choices)
-                ->addTrueFalse('with_border', ['wrapper' => ['width' => 50]]);
+                ->addChoices($choices);
     }
 }
