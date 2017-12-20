@@ -3,8 +3,9 @@
 namespace AcfBreeze\Package\Layouts;
 
 use AcfBreeze\Builder\Field;
-use AcfBreeze\Builder\Layout;
 use AcfBreeze\FieldsBuilder;
+use AcfBreeze\Builder\Layout;
+use StoutLogic\AcfBuilder\FieldsBuilder as StoutLogicFieldsBuilder;
 
 class ColumnLayout extends Layout
 {
@@ -90,9 +91,44 @@ class ColumnLayout extends Layout
     {
         parent::builder($builder);
 
-        $baseWidth = $this->getParam('baseWidth');
+        $this->addGroups($builder);
+    }
+
+    /**
+     * @param FieldsBuilder $builder
+     */
+    protected function addGroups(FieldsBuilder &$builder)
+    {
+        // General settings
+        $this->addGeneralSettings($builder);
+
+        // Add content options
+        $builder->addTab('settings');
+
+        $this->addColumnSelection($builder);
+        $this->addLayoutSettings($builder);
+        $this->addLayoutAlignments($builder);
+        $this->addColumnSizes($builder);
+        $this->addColumnTabs($builder);
+    }
+
+    /**
+     * @param Field $builder
+     * @return void
+     */
+    public function addModule(Field &$builder)
+    {
+        foreach ($this->flexModuleContents as $flexContent) {
+            $flexContent->addLayout($builder->getBuilder());
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function addColumnSelection(StoutLogicFieldsBuilder &$field)
+    {
         $skipColums = $this->getParam('skipColumns');
-        $columnSizes = $this->getParam('columnSizes');
         $columns = $this->getParam('columns');
 
         // Add column selection
@@ -109,13 +145,17 @@ class ColumnLayout extends Layout
             $columnChoices[] = [$currentCol => $currentCol . $columnSuffix];
         }
 
-        $builder->addSelect('columns', ['label' => ''])
+        $field->addSelect('columns', ['label' => ''])
                 ->addChoices($columnChoices);
+    }
 
-        // Add general column settings
-        $this->addSettings($builder);
+    /**
+     * @return void
+     */
+    protected function addColumnTabs(StoutLogicFieldsBuilder &$field) {
+        $skipColums = $this->getParam('skipColumns');
+        $columns = $this->getParam('columns');
 
-        // Create tabs and add modules to tab content
         for ($i = 0; $i < $columns; $i++) {
             $currentCol = ($i + 1);
 
@@ -123,7 +163,7 @@ class ColumnLayout extends Layout
                 continue;
             }
 
-            $tabContent = $builder->addTab('Column ' . $currentCol);
+            $tabContent = $field->addTab('Column ' . $currentCol);
             $tabContent = $tabContent->conditional('columns', '==', trim($currentCol));
 
             for ($ii = 1; $ii <= $columns; $ii++) {
@@ -139,36 +179,27 @@ class ColumnLayout extends Layout
     }
 
     /**
-     * @param Field $builder
+     * @param StoutLogicFieldsBuilder $field
      * @return void
      */
-    public function addModule(Field &$builder)
+    protected function addGeneralSettings(StoutLogicFieldsBuilder &$field)
     {
-        foreach ($this->flexModuleContents as $flexContent) {
-            $flexContent->addLayout($builder->getBuilder());
-        }
+        $field->addText('label', ['label' => 'Label', 'wrapper' => ['width' => 20]]);
     }
 
     /**
-     * @param FieldsBuilder $builder
+     * @param StoutLogicFieldsBuilder $field
+     * @return void
      */
-    protected function addSettings(FieldsBuilder &$builder)
+    protected function addLayoutAlignments(StoutLogicFieldsBuilder &$field)
     {
         $breakpoints = $this->getParam('breakpoints');
 
-        $builder->addTab('Settings');
-        $builder->addGroup('general', ['label' => 'General']);
-        $builder->addText('label', ['label' => 'Label', 'wrapper' => ['width' => 33]]);
-        $builder->addSelect('mode', ['label' => 'Layout Mode', 'wrapper' => ['width' => 33]])
-                ->addChoices($this->layoutModes);
-
-        $builder->addTrueFalse('reverse', ['label' => 'Reverse', 'wrapper' => ['width' => 33]]);
-
-        // Alignment Vertical
-        $builder->addGroup('alignment_vertical', ['label' => 'Vertical alignment']);
+        // Vertical alignment
+        $field->addMessage('Vertical alignment', 'Define the vertical alignment of the content for each breakpoint');
 
         foreach ($breakpoints as $bp) {
-            $builder->addSelect(
+            $field->addSelect(
                 'alignment_vertical_' . strtolower($bp),
                 [
                     'label' => strtoupper($bp),
@@ -179,26 +210,33 @@ class ColumnLayout extends Layout
             )->addChoices($this->verticalAlignments);
         }
 
-        // Alignment Horizontal
-        $builder->addGroup('alignment_horizontal', ['label' => 'Horizontal alignment']);
+        // Horizontal alignment
+        $field->addMessage('Horizontal alignment', 'Define the horizontal alignment of the content for each breakpoint');
 
         foreach ($breakpoints as $bp) {
-            $builder->addSelect(
+            $field->addSelect(
                 'alignment_horizontal_' . strtolower($bp),
                 [
                     'label' => strtoupper($bp),
                     'wrapper' => [
-                        'width' => round(100 / count($breakpoints))
+                        'width' => round((100) / count($breakpoints))
                     ]
                 ]
             )->addChoices($this->horizontalAlignments);
         }
+    }
 
-        // Add column size settings
+    /**
+     * @param StoutLogicFieldsBuilder $field
+     * @return void
+     */
+    protected function addColumnSizes(StoutLogicFieldsBuilder &$field)
+    {
+        $breakpoints = $this->getParam('breakpoints');
         $columns = $this->getParam('columns');
         $columnSizes = $this->getParam('columnSizes');
         $baseWidth = $this->getParam('baseWidth');
-        $builder->addGroup('column_sizes', ['label' => 'Column sizes'])
+        $field->addMessage('Column sizes', 'The column sizes for each column on each breakpoint')
                 ->conditional('columns', '!=', '1');
 
         foreach ($breakpoints as $bp) {
@@ -238,7 +276,7 @@ class ColumnLayout extends Layout
                     $choices[] = [$key => implode(' - ', $sizes)];
                 }
 
-                $builder->addSelect(
+                $select = $field->addSelect(
                     'column_sizes_' . strtolower($bp) . '_' . $currentCol,
                     [
                         'label' => strtoupper($bp),
@@ -246,10 +284,22 @@ class ColumnLayout extends Layout
                             'width' => round(100 / count($breakpoints))
                         ]
                     ]
-                )
-                ->addChoices($choices)
-                ->conditional('columns', '==', trim($currentCol));
+                );
+
+                $select->addChoices($choices);
+                $select->conditional('columns', '==', trim($currentCol));
             }
         }
+    }
+
+    /**
+     * @param StoutLogicFieldsBuilder $field
+     * @return void
+     */
+    protected function addLayoutSettings(StoutLogicFieldsBuilder &$field)
+    {
+        $field->addSelect('mode', ['label' => 'Layout Mode', 'wrapper' => ['width' => 50]])
+                     ->addChoices($this->layoutModes);
+        $field->addTrueFalse('reverse', ['label' => 'Reverse', 'wrapper' => ['width' => 50]]);
     }
 }
