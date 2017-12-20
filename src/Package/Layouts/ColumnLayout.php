@@ -184,7 +184,7 @@ class ColumnLayout extends Layout
      */
     protected function addGeneralSettings(StoutLogicFieldsBuilder &$field)
     {
-        $field->addText('label', ['label' => 'Label', 'wrapper' => ['width' => 20]]);
+        $field->addText('layout_title', ['label' => 'Label', 'wrapper' => ['width' => 20]]);
     }
 
     /**
