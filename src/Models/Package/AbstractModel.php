@@ -91,6 +91,15 @@ abstract class AbstractModel
     }
 
     /**
+     * @param string $name
+     * @return mixed
+     */
+    public function field($name)
+    {
+        return $this->adapter->getField($name);
+    }
+
+    /**
      * @param number $id
      * @return array
      */

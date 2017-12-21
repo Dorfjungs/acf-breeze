@@ -17,7 +17,7 @@ class GroupModel extends AbstractModel
     /**
      * @var string
      */
-    public $entry = 'flex_content';
+    public $entry = '';
 
     /**
      * @var string

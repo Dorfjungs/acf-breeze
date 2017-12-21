@@ -1,8 +1,12 @@
-<div class="acfbreeze--content-group">
-    {% for layout in group.layouts(postId) %}
-        {% include layout.path() with {
-            layout: layout,
-            package: package
-        } %}
-    {% endfor %}
-</div>
+{% set layouts = group.layouts(postId) %}
+
+{% if layouts is not empty %}
+    <div class="acfbreeze--content-group">
+        {% for layout in layouts %}
+            {% include layout.path() with {
+                layout: layout,
+                package: package
+            } %}
+        {% endfor %}
+    </div>
+{% endif %}
