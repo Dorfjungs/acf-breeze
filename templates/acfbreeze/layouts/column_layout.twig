@@ -29,7 +29,7 @@
                 {% endfor %}
 
                 <div class="acfbreeze--column-layout--column column-{{col}}{{
-                    (sizeClasses is empty) ? '' : (' ' ~ sizeClasses|join(' '))
+                    (sizeClasses is empty) ? ' col-xs-12 ' : (' ' ~ sizeClasses|join(' '))
                 }}">
                     {% set modules = layout.modules('modules_' ~ col) %}
                     {% for module in modules %}
