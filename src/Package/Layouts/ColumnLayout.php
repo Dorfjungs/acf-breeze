@@ -3,8 +3,8 @@
 namespace AcfBreeze\Package\Layouts;
 
 use AcfBreeze\Builder\Field;
-use AcfBreeze\FieldsBuilder;
 use AcfBreeze\Builder\Layout;
+use AcfBreeze\FieldsBuilder;
 use StoutLogic\AcfBuilder\FieldsBuilder as StoutLogicFieldsBuilder;
 
 class ColumnLayout extends Layout
@@ -152,7 +152,8 @@ class ColumnLayout extends Layout
     /**
      * @return void
      */
-    protected function addColumnTabs(StoutLogicFieldsBuilder &$field) {
+    protected function addColumnTabs(StoutLogicFieldsBuilder &$field)
+    {
         $skipColums = $this->getParam('skipColumns');
         $columns = $this->getParam('columns');
 

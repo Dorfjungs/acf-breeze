@@ -117,7 +117,8 @@ class AcfBreeze
     /**
      * @return void
      */
-    private static function registerDefaultPackage() {
+    private static function registerDefaultPackage()
+    {
         if ( ! array_key_exists(self::DEFAULT_PACKAGE, static::$configRegistry)) {
             static::$configRegistry[self::DEFAULT_PACKAGE] = static::parseConfig(
                 self::DEFAULT_PACKAGE,
@@ -205,7 +206,7 @@ class AcfBreeze
                         ];
                     }
 
-                    if ( ! array_key_exists('package', $keyConfig)) {
+                    if (is_array($keyConfig) && ! array_key_exists('package', $keyConfig)) {
                         $keyConfig['package'] = $name;
                     }
                 }
@@ -242,19 +243,25 @@ class AcfBreeze
             foreach ($config['groups'] as $name => $option) {
                 $model = static::parseModel(new GroupModel($name), $option);
 
-                if (array_key_exists('layouts', $option)) {
-                    $model->layoutSelector = $option['layouts'];
-                }
+                if ( ! $model) {
+                    if (array_key_exists($name, $package->groups)) {
+                        unset($package->groups[$name]);
+                    }
+                } else {
+                    if (array_key_exists('layouts', $option)) {
+                        $model->layoutSelector = $option['layouts'];
+                    }
 
-                if (array_key_exists('render', $option)) {
-                    $model->render = $option['render'];
-                }
+                    if (array_key_exists('render', $option)) {
+                        $model->render = $option['render'];
+                    }
 
-                if (array_key_exists('entry', $option)) {
-                    $model->entry = $option['entry'];
-                }
+                    if (array_key_exists('entry', $option)) {
+                        $model->entry = $option['entry'];
+                    }
 
-                $package->groups[$name] = $model;
+                    $package->groups[$name] = $model;
+                }
             }
         }
 
@@ -262,17 +269,31 @@ class AcfBreeze
             foreach ($config['layouts'] as $name => $option) {
                 $model = static::parseModel(new LayoutModel($name), $option);
 
-                if (array_key_exists('modules', $option)) {
-                    $model->moduleSelector = $option['modules'];
-                }
+                if ( ! $model) {
+                    if (array_key_exists($name, $package->layouts)) {
+                        unset($package->layouts[$name]);
+                    }
+                } else {
+                    if (array_key_exists('modules', $option)) {
+                        $model->moduleSelector = $option['modules'];
+                    }
 
-                $package->layouts[$name] = $model;
+                    $package->layouts[$name] = $model;
+                }
             }
         }
 
         if (array_key_exists('modules', $config) && is_array($config['modules'])) {
             foreach ($config['modules'] as $name => $option) {
-                $package->modules[$name] = static::parseModel(new ModuleModel($name), $option);
+                $model = static::parseModel(new ModuleModel($name), $option);
+
+                if ( ! $model) {
+                    if (array_key_exists($name, $package->modules)) {
+                        unset($package->modules[$name]);
+                    }
+                } else {
+                    $package->modules[$name] = $model;
+                }
             }
         }
 
@@ -286,6 +307,10 @@ class AcfBreeze
      */
     private static function parseModel($model, $option)
     {
+        if (is_null($option) || false === $option) {
+            return null;
+        }
+
         if (is_array($option)) {
             if (array_key_exists('package', $option)) {
                 $model->package = $option['package'];

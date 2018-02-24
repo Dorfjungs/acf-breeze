@@ -114,7 +114,8 @@ abstract class Field
      * @param string $name
      * @return boolean
      */
-    public function hasParam($name) {
+    public function hasParam($name)
+    {
         return array_key_exists($name, $this->params);
     }
 
