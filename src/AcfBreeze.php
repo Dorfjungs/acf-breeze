@@ -31,6 +31,11 @@ class AcfBreeze
     public function __construct($names = [])
     {
         if ( ! class_exists('\acf')) {
+            if (function_exists('is_admin') && is_admin() ||
+                defined('WP_CLI') && WP_CLI == true) {
+                return;
+            }
+
             throw new Exceptions\AcfNotFoundException(
                 'Can\'t detect ACF. Make sure it\'s installed'
             );
