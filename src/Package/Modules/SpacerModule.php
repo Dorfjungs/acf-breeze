@@ -13,6 +13,17 @@ class SpacerModule extends Field
     protected $title = 'Spacer Module';
 
     /**
+     * @var array
+     */
+    protected $params = [
+        'choices' => [
+            ['small' => 'Small'],
+            ['medium' => 'Medium'],
+            ['large' => 'Large']
+        ]
+    ];
+
+    /**
      * @param AcfBreeze\FieldsBuilder $builder
      * @return void
      */
@@ -20,13 +31,7 @@ class SpacerModule extends Field
     {
         parent::builder($builder);
 
-        $choices = [
-            ['small' => 'Small'],
-            ['medium' => 'Medium'],
-            ['large' => 'Large']
-        ];
-
         $builder->addSelect('type', ['wrapper' => ['width' => 50]])
-                ->addChoices($choices);
+                ->addChoices($this->getParam('choices'));
     }
 }
