@@ -1,0 +1,11 @@
+<section class="acfbreeze--simple-layout--container">
+  <div class="acfbreeze--simple-layout--wrapper">
+    {% set modules = layout.modules('modules_content') %}
+    {% for module in modules %}
+      {% include module.path() with {
+        module: module,
+        package: package
+      } %}
+    {% endfor %}
+  </div>
+</section>

@@ -152,6 +152,10 @@ class AcfBreeze
                 'column_layout' => [
                     'class' => Package\Layouts\ColumnLayout::class,
                     'modules' => '*'
+                ],
+                'simple_layout' => [
+                    'class' => Package\Layouts\SimpleLayout::class,
+                    'modules' => '*'
                 ]
             ],
             'modules' => [
